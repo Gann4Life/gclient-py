@@ -1,4 +1,9 @@
-import json, wget, os, zipfile, shutil, requests
+import json # JSON parsing
+import wget # Downloading files
+import os # Handling folders, paths and directories
+import zipfile # Decompressing zip files
+import shutil # Tool for removing an entire folder
+import requests # Reading content of files hosted in the cloud
 
 """
 https://sites.google.com/site/gdocs2direct/home
