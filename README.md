@@ -27,14 +27,34 @@ I suggest to make your own fork or contribute to this repository.
 1. Download the release (if available)
 1. Open `data` folder and modify `config.json`
 1. Set parameters (`config.json`):<br>
-- [x] `software_file`: The file hosted in the cloud that the program will download.<br>
-    - **Disclaimer**: *It has to be a .zip file!*
-- [x] `software_install_path`: Where is the software going to be extracted.<br>
-- [x] `software_executable_path`: The path of the file that will be executed once the software has been downloaded.<br>
-- [x] `software_name`: The name of your software.<br>
-- [x] `version_file`: The file hosted in the cloud that stores your latest software's version.<br>
-- [x] `version_path`: Where is the version file going to be stored.
-- [ ] _`force_update`: Not implemented._<br>
+
+    `software_file`<br>
+    The file hosted in the cloud that the program will download.<br>
+    Use your own URL.<br>
+    **Disclaimer**: *It has to be a .zip file!*<br>
+
+    `software_install_path`<br>
+    Where is the software going to be extracted.<br>
+    I recommend to leave the default value.<br>
+
+    `software_executable_path`<br>
+    The path of the file that will be executed once the software has been downloaded.<br>
+
+    `software_name`<br>
+    The name of your software.<br>
+
+    `version_file`<br>
+    The file hosted in the cloud that stores your latest software's version.<br>
+    Use your own URL.<br>
+
+    `version_path`<br>
+    Where is the version file going to be stored.<br>
+    I recommend to leave the default value.<br>
+
+    `force_update`<br>
+    _Not implemented._<br>
+    Forces the software to be updated.<br>
+    Probably useful for multiplayer games.
 
 * Example:
 ```json
