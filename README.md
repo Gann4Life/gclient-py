@@ -6,6 +6,15 @@ C# and JS version will come after this gets finished.
 I won't recommend using this right now as it is in constant development and unstable. <br>
 I suggest to make your own fork or contribute to this repository.
 
+# Goals
+- [ ] Python version
+    - [x] Console version (core)
+    - [ ] TKInter version
+    - [ ] Kivy version
+    - [ ] PyQt version
+- [ ] C# version (GUI)
+- [ ] JS version (GUI)
+
 # How it works
 1. Verifies if the software has been installed/downloaded.
     1. `if YES`: verify if it is up to date
