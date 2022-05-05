@@ -24,6 +24,8 @@ I suggest to make your own fork or contribute to this repository.
 
 
 # Setup
+1. Host your software's zip file and version.txt file in a service that allows direct access to the files content or binary data.<br>
+For this program i'd recommend using Google Drive along [this tool.](https://sites.google.com/site/gdocs2direct/home)
 1. Download the release (if available)
 1. Open `data` folder and modify `config.json`
 1. Set parameters (`config.json`):<br>
