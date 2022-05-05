@@ -12,7 +12,10 @@ or allow downloading files from a direct link.
 """
 
 def error(message):
-    """Display the captured error and stops the program for the user to view it and get in touch with the developer."""
+    """Display the captured error and stops the program for the user to view it and get in touch with the developer.
+    Args:
+    * message (string): A message to display, for example what caused the error.
+    """
     print(f"An error has been found:\n{message}")
     print("Please try again or contact the developer https://github.com/gann4life")
     input()
