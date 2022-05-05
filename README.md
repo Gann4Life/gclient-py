@@ -16,7 +16,7 @@ I suggest to make your own fork or contribute to this repository.
 - [x] `software_name`: The name of your software.<br>
 - [x] `version_file`: The file hosted in the cloud that stores your latest software's version.<br>
 - [x] `version_path`: Where is the version file going to be stored.
-- [ ]_`force_update`: Not implemented._<br>
+- [ ] _`force_update`: Not implemented._<br>
 
 Example:
 ```json
