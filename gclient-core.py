@@ -48,14 +48,30 @@ class Software:
         self.verify_updates()
         self.launch_software()
 
+    # GETTERS
+
     def get_config(self, param):
         """Returns the value of the parameter in the json file"""
         return self.json_config[param]
 
+    def get_software_local_version(self):
+        """Returns the currently installed version installed of the software."""
+
+        if not os.path.exists(self.in_data(self.VERSION_PATH)):
+            print(f"WARNING: The {self.PREFIX.lower()} seems to be installed, but the version text file was not found.\nA reinstall will be initialized.")
+            return None
+        else:
+            return open(self.in_data(self.VERSION_PATH), "r").read()
+
+    def get_software_cloud_version(self):
+        """Returns the software's version stored in the cloud."""
+
+        return requests.get(self.VERSION_FILE).content.decode()
+
     def is_software_downloaded(self):
         """Checks if the software from the configuration file has been downloaded.
         Returns: bool"""
-        return os.path.exists(self.path_inside_data(self.INSTALL_PATH))
+        return os.path.exists(self.in_data(self.EXEC_PATH))
 
     def is_software_updated(self):
         """Checks if the software is up to date.
@@ -64,11 +80,31 @@ class Software:
         print(f"Checking if the {self.PREFIX} is up to date...")
         return self.get_software_cloud_version() == self.get_software_local_version()
 
+    # PROCESSING
+
+    def in_data(self, path):
+        """Returns a path relative to the updater's data folder."""
+
+        return self.data_path + path
+
+    def in_app(self, path=""):
+        """Returns a path relative to the software's folder."""
+        return self.data_path + self.INSTALL_PATH + path
+
+    # ACTIONS
+    
+    def setup_directories(self):
+        """Creates the required directories for the software."""
+
+        if not os.path.exists(self.in_data(self.INSTALL_PATH)):
+            print(f"Setting up directories for {self.NAME}")
+            os.mkdir(self.in_data(self.INSTALL_PATH))
+
     def verify_installation(self):  
         """Executes installation verification."""
 
-        if not os.path.exists(self.path_inside_data(self.EXEC_PATH)):
-            print(f"{self.EXEC_PATH} was not found. Installation required.")
+        if not self.is_software_downloaded():
+            print(f"INSTALL REQUIRED: {self.EXEC_PATH} was not found.")
             self.download_software()
 
     def verify_updates(self):
@@ -80,29 +116,27 @@ class Software:
             print("\nNew update was found, updating...")
             self.update_software()
 
+    def download_software(self):
+        """Downloads the software"""
+
+        print(f"Downloading {self.PREFIX.lower()}...")
+        
+        filename = self.download_overriding(self.FILE, ".\\App.zip")
+        self.extract_zip(filename)
+        self.download_version_file()
+
     def update_software(self):
         """Updates the software version."""
-
+        print(f"Updating {self.NAME}...")
         self.uninstall_software()
         self.download_software()
 
     def uninstall_software(self):
         """Removes all files inside the software's folder."""
 
-        print("\nUninstalling software...")
-        rmtree(self.path_inside_data(self.INSTALL_PATH))
+        print(f"\nUninstalling {self.PREFIX.lower()}...")
+        rmtree(self.in_data(self.INSTALL_PATH))
 
-    # Downloads the file from the link used in config.json
-    def download_software(self):
-        """Downloads the software"""
-
-        print(f"Downloading {self.PREFIX}")
-        
-        filename = self.download_overriding(self.FILE, ".\\App.zip")
-        self.extract_zip(filename)
-        self.download_version_file()
-
-    # Extracts the contents of the .zip file into software insall path.
     def extract_zip(self, path):
         """Extracts the contents of the .zip file into software install path.
         Args:
@@ -111,44 +145,18 @@ class Software:
         
         print(f"\nExtracting {path} to {self.INSTALL_PATH}")
         zip_file = zipfile.ZipFile(path)
-        zip_file.extractall(path=self.path_inside_data(self.INSTALL_PATH))
+        zip_file.extractall(path=self.in_data(self.INSTALL_PATH))
 
     def launch_software(self):
         """Executes the software"""
 
         print(f"\nLaunching {self.EXEC_PATH}")
-        os.startfile(self.path_inside_data(self.get_config("software_executable_path")))
-
-    def path_inside_data(self, path):
-        """Returns a path relative to the updater's data folder."""
-
-        return self.data_path + path
-
-    def get_software_local_version(self):
-        """Returns the currently installed version installed of the software."""
-
-        if not os.path.exists(self.path_inside_data(self.VERSION_PATH)):
-            print(f"WARNING: The {self.PREFIX.lower()} seems to be installed, but the version text file was not found.\nA reinstall will be initialized.")
-            return None
-        else:
-            return open(self.path_inside_data(self.VERSION_PATH), "r").read()
-
-    def get_software_cloud_version(self):
-        """Returns the software's version stored in the cloud."""
-
-        return requests.get(self.VERSION_FILE).content.decode()
+        os.startfile(self.in_data(self.get_config("software_executable_path")))
 
     def download_version_file(self):
         """Downloads the version file into the data folder."""
 
-        self.download_overriding(self.VERSION_FILE, self.path_inside_data(self.VERSION_PATH))
-
-    def setup_directories(self):
-        """Creates the required directories for the software."""
-
-        if not os.path.exists(self.path_inside_data(self.INSTALL_PATH)):
-            print(f"Setting up directories for {self.NAME}")
-            os.mkdir(self.path_inside_data(self.INSTALL_PATH))
+        self.download_overriding(self.VERSION_FILE, self.in_data(self.VERSION_PATH))
 
     def download_overriding(self, url, path):
         """Downloads a file and overrides the existing file if it exists.
