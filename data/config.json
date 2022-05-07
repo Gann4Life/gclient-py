@@ -2,8 +2,8 @@
     "software_file": "https://link-to-your/file.zip",
     "software_install_path": "\\app",
     "software_executable_path": "\\app\\game.exe",
-    "software_name": "Name of your software.",
-    "software_prefix": "Software type (game? prototype? software?)",
+    "software_name": "My Software Name.",
+    "software_prefix": "Application",
     "version_file": "https://link-to-your/version-file.txt",
     "version_path": "\\version.txt"
 }
