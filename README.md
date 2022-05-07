@@ -45,6 +45,9 @@ For this program i'd recommend using Google Drive along [this tool.](https://sit
     `software_name`<br>
     The name of your software.<br>
 
+    `software_prefix`<br>
+    The prefix of your software. (Game/Software/Prototype/Etc)
+
     `version_file`<br>
     The file hosted in the cloud that stores your latest software's version.<br>
     Use your own URL.<br>
@@ -64,7 +67,8 @@ For this program i'd recommend using Google Drive along [this tool.](https://sit
     "software_file": "https://link-to-your/file.zip",
     "software_install_path": "\\app",
     "software_executable_path": "\\app\\game.exe",
-    "software_name": "Name of your software.",
+    "software_name": "My Software Name.",
+    "software_prefix": "Application",
     "version_file": "https://link-to-your/version-file.txt",
     "version_path": "\\version.txt"
 }
