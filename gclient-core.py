@@ -57,7 +57,6 @@ class Software:
 
     def get_software_local_version(self):
         """Returns the currently installed version installed of the software."""
-
         if not os.path.exists(self.in_data(self.VERSION_PATH)):
             print(f"WARNING: The {self.PREFIX.lower()} seems to be installed, but the version text file was not found.\nA reinstall will be initialized.")
             return None
@@ -66,7 +65,6 @@ class Software:
 
     def get_software_cloud_version(self):
         """Returns the software's version stored in the cloud."""
-
         return requests.get(self.VERSION_FILE).content.decode()
 
     def is_software_downloaded(self):
