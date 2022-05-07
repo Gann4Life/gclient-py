@@ -2,8 +2,8 @@ import json # JSON parsing
 import wget # Downloading files
 import os # Handling folders, paths and directories
 import zipfile # Decompressing zip files
-import shutil # Tool for removing an entire folder
 import requests # Reading content of files hosted in the cloud
+from shutil import rmtree # Tool for removing an entire folder
 
 """
 https://sites.google.com/site/gdocs2direct/home
@@ -21,7 +21,7 @@ def error(message):
     input()
     quit()
 
-class SoftwareUpdater:
+class Software:
     """Base class for the software updater application.
     Params:
     * data_path (string) : Folder name which contains all the application files.
@@ -32,45 +32,49 @@ class SoftwareUpdater:
         self.config_file = config_file
         self.data_path = data_path
 
-        with open(data_path + config_file, "r") as f:
-            json_content = json.loads(f.read())
+        self.json_config = json.loads(open(data_path + config_file, "r").read())
 
-            self.software_file = json_content["software_file"]
-            self.software_executable_path = json_content["software_executable_path"]
-            self.software_install_path = json_content["software_install_path"]
-            self.software_name = json_content["software_name"]
+        self.FILE = self.get_config("software_file")
+        self.EXEC_PATH = self.get_config("software_executable_path")
+        self.INSTALL_PATH = self.get_config("software_install_path")
+        self.NAME = self.get_config("software_name")
+        self.PREFIX = self.get_config("software_prefix")
 
-            self.version_file = json_content["version_file"]
-            self.version_path = json_content["version_path"]
+        self.VERSION_FILE = self.get_config("version_file")
+        self.VERSION_PATH = self.get_config("version_path")
 
-            self.setup_directories()
-            self.verify_installation()
-            self.verify_updates()
-            self.launch_software()
+        self.setup_directories()
+        self.verify_installation()
+        self.verify_updates()
+        self.launch_software()
+
+    def get_config(self, param):
+        """Returns the value of the parameter in the json file"""
+        return self.json_config[param]
 
     def is_software_downloaded(self):
         """Checks if the software from the configuration file has been downloaded.
         Returns: bool"""
-        return os.path.exists(self.path_inside_data(self.software_install_path))
+        return os.path.exists(self.path_inside_data(self.INSTALL_PATH))
 
     def is_software_updated(self):
         """Checks if the software is up to date.
         Returns: bool"""
 
-        print("Checking if the software is up to date...")
+        print(f"Checking if the {self.PREFIX} is up to date...")
         return self.get_software_cloud_version() == self.get_software_local_version()
 
     def verify_installation(self):  
         """Executes installation verification."""
 
-        if not os.path.exists(self.path_inside_data(self.software_executable_path)):
-            print(f"{self.software_executable_path} was not found. Installation required.")
+        if not os.path.exists(self.path_inside_data(self.INSTALL_PATH)):
+            print(f"{self.EXEC_PATH} was not found. Installation required.")
             self.download_software()
 
     def verify_updates(self):
         """Executes updates verification."""
 
-        print(f"{self.software_executable_path} exists. Checking for updates...")
+        print(f"{self.EXEC_PATH} exists. Checking for updates...")
 
         if not self.is_software_updated():
             print("\nNew update was found, updating...")
@@ -78,6 +82,7 @@ class SoftwareUpdater:
 
     def update_software(self):
         """Updates the software version."""
+
         self.uninstall_software()
         self.download_software()
 
@@ -85,15 +90,15 @@ class SoftwareUpdater:
         """Removes all files inside the software's folder."""
 
         print("\nUninstalling software...")
-        shutil.rmtree(self.path_inside_data(self.software_install_path))
+        rmtree(self.path_inside_data(self.INSTALL_PATH))
 
     # Downloads the file from the link used in config.json
     def download_software(self):
         """Downloads the software"""
 
-        print("Downloading software")
-        # filename = wget.download(self.software_file)
-        filename = self.download_overriding(self.software_file, ".\\App.zip")
+        print(f"Downloading {self.PREFIX}")
+        
+        filename = self.download_overriding(self.FILE, ".\\App.zip")
         self.extract_zip(filename)
         self.download_version_file()
 
@@ -103,39 +108,43 @@ class SoftwareUpdater:
         Args:
         * path (string): Path of the .zip file to extract.
         """
-        print(f"\nExtracting {path} to {self.software_install_path}")
+        
+        print(f"\nExtracting {path} to {self.INSTALL_PATH}")
         zip_file = zipfile.ZipFile(path)
-        zip_file.extractall(path=self.path_inside_data(self.software_install_path))
+        zip_file.extractall(path=self.path_inside_data(self.INSTALL_PATH))
 
     def launch_software(self):
         """Executes the software"""
 
-        print(f"\nLaunching {self.software_executable_path}")
-        os.startfile(self.path_inside_data(self.software_executable_path))
+        print(f"\nLaunching {self.EXEC_PATH}")
+        os.startfile(self.path_inside_data(self.get_config("software_executable_path")))
 
     def path_inside_data(self, path):
         """Returns a path relative to the updater's data folder."""
+
         return self.data_path + path
 
     def get_software_local_version(self):
         """Returns the currently installed version installed of the software."""
-        return open(self.path_inside_data(self.version_path), "r").read()
+
+        return open(self.path_inside_data(self.VERSION_PATH), "r").read()
 
     def get_software_cloud_version(self):
         """Returns the software's version stored in the cloud."""
-        return requests.get(self.version_file).content.decode()
+
+        return requests.get(self.VERSION_FILE).content.decode()
 
     def download_version_file(self):
         """Downloads the version file into the data folder."""
 
-        self.download_overriding(self.version_file, self.path_inside_data(self.version_path))
+        self.download_overriding(self.VERSION_FILE, self.path_inside_data(self.VERSION_PATH))
 
     def setup_directories(self):
         """Creates the required directories for the software."""
 
-        if not os.path.exists(self.path_inside_data(self.software_install_path)):
-            print("Setting up folders...")
-            os.mkdir(self.path_inside_data(self.software_install_path))
+        if not os.path.exists(self.path_inside_data(self.INSTALL_PATH)):
+            print(f"Setting up directories for {self.NAME}")
+            os.mkdir(self.path_inside_data(self.INSTALL_PATH))
 
     def download_overriding(self, url, path):
         """Downloads a file and overrides the existing file if it exists.
@@ -148,6 +157,6 @@ class SoftwareUpdater:
         return wget.download(url, out=path)
 
 # Execute the program, if any error is captured, show the error into the console and display a way to contact the developer.
-try: updater = SoftwareUpdater(".\\data", "\\config.json")
+try: updater = Software(".\\data", "\\config.json")
 except Exception as e: error(e)
 
