@@ -67,7 +67,7 @@ class Software:
     def verify_installation(self):  
         """Executes installation verification."""
 
-        if not os.path.exists(self.path_inside_data(self.INSTALL_PATH)):
+        if not os.path.exists(self.path_inside_data(self.EXEC_PATH)):
             print(f"{self.EXEC_PATH} was not found. Installation required.")
             self.download_software()
 
@@ -127,7 +127,11 @@ class Software:
     def get_software_local_version(self):
         """Returns the currently installed version installed of the software."""
 
-        return open(self.path_inside_data(self.VERSION_PATH), "r").read()
+        if not os.path.exists(self.path_inside_data(self.VERSION_PATH)):
+            print(f"WARNING: The {self.PREFIX.lower()} seems to be installed, but the version text file was not found.\nA reinstall will be initialized.")
+            return None
+        else:
+            return open(self.path_inside_data(self.VERSION_PATH), "r").read()
 
     def get_software_cloud_version(self):
         """Returns the software's version stored in the cloud."""
@@ -150,7 +154,7 @@ class Software:
         """Downloads a file and overrides the existing file if it exists.
         Args:
         url (string): The url to download the file from.
-        path (string): The path to download the file into.
+        path (string): The path to download the file into.  
         """
 
         if os.path.exists(path): os.remove(path)
