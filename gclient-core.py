@@ -43,6 +43,7 @@ class Software:
         self.VERSION_FILE = self.get_config("version_file")
         self.VERSION_PATH = self.get_config("version_path")
 
+        self.cleanup()
         self.setup_directories()
         self.verify_installation()
         self.verify_updates()
@@ -71,13 +72,11 @@ class Software:
     def is_software_downloaded(self):
         """Checks if the software from the configuration file has been downloaded.
         Returns: bool"""
-        return os.path.exists(self.in_data(self.EXEC_PATH))
+        return os.path.exists(self.in_app(self.EXEC_PATH))
 
     def is_software_updated(self):
         """Checks if the software is up to date.
         Returns: bool"""
-
-        print(f"Checking if the {self.PREFIX} is up to date...")
         return self.get_software_cloud_version() == self.get_software_local_version()
 
     # PROCESSING
@@ -93,35 +92,35 @@ class Software:
 
     # ACTIONS
     
+    def cleanup(self):
+        """Gets rid of .zip and .tmp files."""
+        for f in os.listdir(".\\"):
+            if f.endswith("zip") or f.endswith("tmp"):
+                os.remove(f)
+    
     def setup_directories(self):
         """Creates the required directories for the software."""
-
         if not os.path.exists(self.in_app()):
             print(f"Setting up directories for {self.NAME}")
             os.mkdir(self.in_app())
 
     def verify_installation(self):  
         """Executes installation verification."""
-
         if not self.is_software_downloaded():
-            print(f"INSTALL REQUIRED: {self.EXEC_PATH} was not found.")
+            print(f"INSTALL REQUIRED: {self.in_app(self.EXEC_PATH)} was not found.")
             self.download_software()
 
     def verify_updates(self):
         """Executes updates verification."""
-
-        print(f"{self.EXEC_PATH} exists. Checking for updates...")
-
+        print(f"\nChecking for updates...")
         if not self.is_software_updated():
             print("\nNew update was found, updating...")
             self.update_software()
 
     def download_software(self):
         """Downloads the software"""
-
         print(f"Downloading {self.PREFIX.lower()}...")
-        
-        filename = self.download_overriding(self.FILE, ".\\App.zip")
+        filename = wget.download(self.FILE)#self.download_overriding(self.FILE)
         self.extract_zip(filename)
         self.download_version_file()
 
@@ -133,7 +132,6 @@ class Software:
 
     def uninstall_software(self):
         """Removes all files inside the software's folder."""
-
         print(f"\nUninstalling {self.PREFIX.lower()}...")
         rmtree(self.in_app())
 
@@ -142,20 +140,17 @@ class Software:
         Args:
         * path (string): Path of the .zip file to extract.
         """
-        
         print(f"\nExtracting {path} to {self.in_app()}")
         zip_file = zipfile.ZipFile(path)
         zip_file.extractall(path=self.in_app())
 
     def launch_software(self):
         """Executes the software"""
-
         print(f"\nLaunching {self.EXEC_PATH}")
-        os.startfile(self.in_data(self.get_config("software_executable_path")))
+        os.startfile(self.in_app(self.EXEC_PATH))
 
     def download_version_file(self):
         """Downloads the version file into the data folder."""
-
         self.download_overriding(self.VERSION_FILE, self.in_data(self.VERSION_PATH))
 
     def download_overriding(self, url, path):
@@ -164,7 +159,6 @@ class Software:
         url (string): The url to download the file from.
         path (string): The path to download the file into.  
         """
-
         if os.path.exists(path): os.remove(path)
         return wget.download(url, out=path)
 

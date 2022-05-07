@@ -1,9 +1,9 @@
 {
-    "software_file": "https://link-to-your/file.zip",
+    "software_file": "https://drive.google.com/uc?export=download&id=1fewj_UsITXp5dL8JhVTE1PQpZBg28q1W&confirm=t",
     "software_install_path": "\\app",
-    "software_executable_path": "\\app\\game.exe",
-    "software_name": "My Software Name.",
-    "software_prefix": "Application",
-    "version_file": "https://link-to-your/version-file.txt",
+    "software_executable_path": "\\Thirdym.exe",
+    "software_name": "Thirdym",
+    "software_prefix": "Game",
+    "version_file": "https://drive.google.com/uc?export=download&id=1qndVeTXsk9UbnFNsn5cGIpWtvSVVS35u",
     "version_path": "\\version.txt"
 }
