@@ -96,9 +96,9 @@ class Software:
     def setup_directories(self):
         """Creates the required directories for the software."""
 
-        if not os.path.exists(self.in_data(self.INSTALL_PATH)):
+        if not os.path.exists(self.in_app()):
             print(f"Setting up directories for {self.NAME}")
-            os.mkdir(self.in_data(self.INSTALL_PATH))
+            os.mkdir(self.in_app())
 
     def verify_installation(self):  
         """Executes installation verification."""
@@ -135,7 +135,7 @@ class Software:
         """Removes all files inside the software's folder."""
 
         print(f"\nUninstalling {self.PREFIX.lower()}...")
-        rmtree(self.in_data(self.INSTALL_PATH))
+        rmtree(self.in_app())
 
     def extract_zip(self, path):
         """Extracts the contents of the .zip file into software install path.
@@ -143,9 +143,9 @@ class Software:
         * path (string): Path of the .zip file to extract.
         """
         
-        print(f"\nExtracting {path} to {self.INSTALL_PATH}")
+        print(f"\nExtracting {path} to {self.in_app()}")
         zip_file = zipfile.ZipFile(path)
-        zip_file.extractall(path=self.in_data(self.INSTALL_PATH))
+        zip_file.extractall(path=self.in_app())
 
     def launch_software(self):
         """Executes the software"""
