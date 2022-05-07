@@ -40,7 +40,7 @@ For this program i'd recommend using Google Drive along [this tool.](https://sit
     I recommend to leave the default value.<br>
 
     `software_executable_path`<br>
-    The path of the file that will be executed once the software has been downloaded.<br>
+    The path of the file that will be executed, this refers to files and folders inside `software_install_path`.<br>
 
     `software_name`<br>
     The name of your software.<br>
@@ -61,13 +61,13 @@ For this program i'd recommend using Google Drive along [this tool.](https://sit
     Forces the software to be updated.<br>
     Probably useful for multiplayer games.
 
-* Example:
+# Example
 ```json
 {
-    "software_file": "https://link-to-your/file.zip",
+    "software_file": "https://link-to-your/app.zip",
     "software_install_path": "\\app",
-    "software_executable_path": "\\app\\game.exe",
-    "software_name": "My Software Name.",
+    "software_executable_path": "\\app.exe",
+    "software_name": "My App Name.",
     "software_prefix": "Application",
     "version_file": "https://link-to-your/version-file.txt",
     "version_path": "\\version.txt"
