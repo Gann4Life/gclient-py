@@ -45,6 +45,7 @@ class SoftwareUpdater:
 
             self.setup_directories()
             self.verify_installation()
+            self.verify_updates()
             self.launch_software()
 
     def is_software_downloaded(self):
@@ -55,24 +56,23 @@ class SoftwareUpdater:
     def is_software_updated(self):
         """Checks if the software is up to date.
         Returns: bool"""
-        return self.get_software_local_version() == self.get_software_cloud_version()
 
-    def verify_installation(self):
+        print("Checking if the software is up to date...")
+        return self.get_software_cloud_version() == self.get_software_local_version()
+
+    def verify_installation(self):  
         """Executes installation verification."""
 
         if not os.path.exists(self.path_inside_data(self.software_executable_path)):
             print(f"{self.software_executable_path} was not found. Installation required.")
             self.download_software()
-        else:
-            print(f"{self.software_executable_path} exists. Checking for updates...")
-            self.verify_updates()
 
     def verify_updates(self):
         """Executes updates verification."""
 
-        if self.is_software_updated():
-            print("\nSoftware is up to date. Launching...")
-        else:
+        print(f"{self.software_executable_path} exists. Checking for updates...")
+
+        if not self.is_software_updated():
             print("\nNew update was found, updating...")
             self.update_software()
 
@@ -119,13 +119,10 @@ class SoftwareUpdater:
 
     def get_software_local_version(self):
         """Returns the currently installed version installed of the software."""
-
-        with open(self.path_inside_data(self.version_path), "r") as f:
-            return f.read()
+        return open(self.path_inside_data(self.version_path), "r").read()
 
     def get_software_cloud_version(self):
         """Returns the software's version stored in the cloud."""
-
         return requests.get(self.version_file).content.decode()
 
     def download_version_file(self):
