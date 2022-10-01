@@ -22,6 +22,8 @@ I suggest to make your own fork or contribute to this repository.
     1. `if NOT`: download it
 1. Execute the software.
 
+![Class Diagram](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/Gann4Life/gclient-py/main/UML/concept.puml)
+
 
 # Setup
 1. Host your software's zip file and version.txt file in a service that allows direct access to the files content or binary data.<br>
