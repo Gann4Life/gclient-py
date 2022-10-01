@@ -6,7 +6,7 @@ actor User
 participant "Software GUI" as ClientApp
 participant "Host Service" as Database
 
-User -> ClientApp++: Click 'Launch'
+User -> ClientApp++: Request to 'Launch' software
 ClientApp -> Database++: Compare client's version
 alt If versions match
     ClientApp <-- Database: Up to date
