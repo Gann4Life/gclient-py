@@ -1,0 +1,23 @@
+@startuml
+
+title "Software updater diagram"
+
+actor User
+participant "Software GUI" as ClientApp
+participant "Host Service" as Database
+
+User -> ClientApp++: Click 'Play'
+ClientApp -> Database++: Compare client's version
+alt If versions match
+    ClientApp <-- Database: Up to date
+else Otherwise
+    ClientApp <-- Database: Update/Install required
+    ClientApp -> Database: Download game file
+    ClientApp <-- Database--
+
+    ClientApp -> ClientApp: Extract file
+end
+User <- ClientApp--: Launch game
+
+
+@enduml
